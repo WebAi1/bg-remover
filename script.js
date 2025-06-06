@@ -1,6 +1,6 @@
 // ===== CONFIGURATION ===== //
 const PIXELBIN_API = "https://api.pixelbin.io/v2/removebg";
-const API_KEY = "ed81d0de-7dfa-4526-a956-6e937d90ea9f"; // REPLACE WITH YOUR KEY
+const API_KEY = "7881e729-2837-4076-9466-08c622cdae4a"; // REPLACE WITH YOUR KEY
 
 // ===== ELEMENTS ===== //
 const uploadZone = document.getElementById('uploadZone');
