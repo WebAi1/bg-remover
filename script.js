@@ -1,6 +1,6 @@
 // ===== CONFIGURATION ===== //
-const PIXELBIN_API = "https://api.pixelbin.io/v2/removebg";
-const API_KEY = "7881e729-2837-4076-9466-08c622cdae4a"; // REPLACE WITH YOUR KEY
+const REMOVEBG_API = "https://api.remove.bg/v1.0/removebg";
+const API_KEY = "7881e729-2837-4076-9466-08c622cdae4a"; // GET FROM REMOVE.BG
 
 // ===== ELEMENTS ===== //
 const uploadZone = document.getElementById('uploadZone');
@@ -17,34 +17,34 @@ async function handleImageSelect(e) {
   
   const file = e.target.files[0];
   if(!file.type.match('image.*')) {
-    alert('Please select an image file (JPG/PNG)');
+    alert('Please select JPG or PNG image');
     return;
   }
   
   showLoader(true);
   
   try {
-    // Display original image
+    // Display original
     const originalImg = document.getElementById('originalImg');
     originalImg.src = URL.createObjectURL(file);
     
     // Prepare API request
     const formData = new FormData();
-    formData.append('image', file);
+    formData.append('image_file', file);
     
-    // Call PixelBin API
-    const response = await fetch(PIXELBIN_API, {
+    // Call API
+    const response = await fetch(REMOVEBG_API, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${API_KEY}`
+        'X-Api-Key': API_KEY
       },
       body: formData
     });
     
-    // Handle API errors
+    // Handle errors
     if(!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Background removal failed');
+      const errorData = await response.json();
+      throw new Error(errorData.errors[0].title);
     }
     
     // Show result
@@ -52,27 +52,23 @@ async function handleImageSelect(e) {
     const resultImg = document.getElementById('resultImg');
     resultImg.src = URL.createObjectURL(resultBlob);
     
-    // Set up download
-    downloadBtn.onclick = () => downloadImage(resultBlob);
+    // Setup download
+    downloadBtn.onclick = () => {
+      const a = document.createElement('a');
+      a.href = resultImg.src;
+      a.download = 'background-removed.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    };
     
-    // Show results
     resultSection.style.display = 'block';
     
   } catch(error) {
-    alert(`Error: ${error.message}\n\nTip: Use clear photos with distinct foreground objects`);
+    alert(`Error: ${error.message}\n\n1. Use clear photos\n2. Check API key\n3. Try smaller image`);
   } finally {
     showLoader(false);
   }
-}
-
-// ===== HELPER FUNCTIONS ===== //
-function downloadImage(blob) {
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'no-background.png';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
 }
 
 function resetApp() {
@@ -85,6 +81,3 @@ function showLoader(show) {
   loader.style.display = show ? 'block' : 'none';
   uploadZone.style.display = show ? 'none' : 'block';
 }
-
-// Touch optimization for mobile
-document.body.addEventListener('touchstart', function() {}, { passive: true });
