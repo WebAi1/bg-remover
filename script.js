@@ -1,6 +1,6 @@
 // ===== CONFIGURATION ===== //
 const REMOVEBG_API = "https://api.remove.bg/v1.0/removebg";
-const API_KEY = "7881e729-2837-4076-9466-08c622cdae4a"; // GET FROM REMOVE.BG
+const API_KEY = "oZvsJ8wzQfW6gvEVTfVKxUYt"; // GET FROM REMOVE.BG
 
 // ===== ELEMENTS ===== //
 const uploadZone = document.getElementById('uploadZone');
